@@ -2,7 +2,7 @@
 AlarmManager计时器【倒计时】
 
  
-在实际讨论之前，我们首先看一个实例之后，然后再讨论Android中Timer和AlarmManager的具体区别
+在实际讨论之前，我们首先看一个实例[网上的一个范例，拿来直接使用，写的很好，明白易懂]之后，然后再讨论Android中Timer和AlarmManager的具体区别
 
 在Android上常用的定时器有两种，一种是Java.util.Timer，一种就是系统的AlarmService了。
 
@@ -144,7 +144,7 @@ FLAG_UPDATE_CURRENT:如果系统中有一个和你描述的PendingIntent对等�
  
  认真思考之后，我的构思是这样的：
  第一、使用一个注册广播【全局性的】来监听AlarmService每次发出的请求并且根据不同的AlarmService【绑定的requestCode、Action不同】,做出像对应的处理和界面显示
- 第二、每添加一个计时器，开辟一个相对应的AlarmManager，
+ 第二、每添加一个计时器，开辟一个相对应的AlarmManager，当然如果关闭时，一定要找到与之对应的才行。
  
  回顾：其实可以使用Serive来做此问题，综合考虑，感觉不合适，后来废弃了，如果有其他用户使用Service来实现此功能，可以提供参考。
  
