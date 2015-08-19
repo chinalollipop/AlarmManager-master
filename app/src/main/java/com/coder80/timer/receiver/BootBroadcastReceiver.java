@@ -1,9 +1,5 @@
 package com.coder80.timer.receiver;
 
-import com.coder80.timer.TimerApplication;
-import com.coder80.timer.utils.Constants;
-import com.coder80.timer.utils.ServiceUtil;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +7,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.coder80.timer.TimerApplication;
+import com.coder80.timer.utils.Constants;
+import com.coder80.timer.utils.ServiceUtil;
+
 
 /**
- * Created by coder80 on 2014/11/3.
+ * Created by Daniel on 2015/8/18.
  */
 public class BootBroadcastReceiver extends BroadcastReceiver {
 	private final String TAG = "BootBroadcastReceiver";

@@ -7,7 +7,7 @@ import android.util.Log;
 
 
 /**
- * Created by coder80 on 2014/10/31.
+ * Created by Daniel on 2015/8/18.
  */
 public class UploadPOIService2 extends Service implements Runnable{
     private String TAG = UploadPOIService2.class.getSimpleName();

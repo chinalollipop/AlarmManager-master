@@ -13,7 +13,7 @@ import com.coder80.timer.receiver.BootBroadcastReceiver;
 import com.coder80.timer.service.UploadPOIService;
 import com.coder80.timer.service.UploadPOIService2;
 /**
- * Created by coder80 on 2014/10/31.
+ * Created by Daniel on 2015/8/18.
  */
 
 public class ServiceUtil {
