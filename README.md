@@ -4,7 +4,7 @@ AlarmManager计时器【倒计时】
  
 在实际讨论之前，我们首先看一个实例[网上的一个范例，拿来直接使用，写的很好，明白易懂]之后，然后再讨论Android中Timer和AlarmManager的具体区别
 
-在Android上常用的定时器有两种，一种是Java.util.Timer，一种就是系统的AlarmService了。
+在Android上常用的定时器有两种，一种是Java.util.Timer，一种就是系统的AlarmManager了。
 
 实验1：使用Java.util.Timer。
 
@@ -25,8 +25,8 @@ Java代码
 当拔掉USB线，按下电源键关闭屏幕后，过一段时间再打开，你会发现定时器明显没有继续计数，停留在了关闭电源键时的数字。
 甚至，你可能会发现屏幕显示的时间有时候在跳帧或者调频【Timer之间再抢夺资源导致的】
 
-实验2：使用AlarmService：
-2.1通过AlarmService每个5秒发送一个广播，setRepeating时的类型为AlarmManager.ELAPSED_REALTIME。
+实验2：使用AlarmManager：
+2.1通过AlarmManager每个5秒发送一个广播，setRepeating时的类型为AlarmManager.ELAPSED_REALTIME。
 
 Java代码
 1AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
@@ -140,10 +140,10 @@ FLAG_UPDATE_CURRENT:如果系统中有一个和你描述的PendingIntent对等�
  项目需求：
  1、计时器需要多个，并且相互之间不受影响，比如计时器一的运算不会影响计时器二的运算，相互的显示也不受影响；
  2、考虑手机的电量使用情况【此处是一个性能优化的问题，再保证程序稳定性的时候，才会考虑其健壮性】
- 思考：由于项目的需要，我的计时器可能需要多个，并且相互之间没有影响，通过AlarmService和Timer的对比，无论从性能还是程序的健壮性上，因为Timer在实际的开发中不安全，比如手机关闭电源键，他有时间不会跳动，一直停留在原来的时间，并且受程序代码的影响，比如系统资源不足时，会把当前的计时器回收掉。而AlarmService却可以屏蔽这一点，因为他调用的是系统CPU的资源，不受其他影响，除非手机关机了，或者重启了，没有打开此APP等等
+ 思考：由于项目的需要，我的计时器可能需要多个，并且相互之间没有影响，通过AlarmManager和Timer的对比，无论从性能还是程序的健壮性上，因为Timer在实际的开发中不安全，比如手机关闭电源键，他有时间不会跳动，一直停留在原来的时间，并且受程序代码的影响，比如系统资源不足时，会把当前的计时器回收掉。而AlarmManager却可以屏蔽这一点，因为他调用的是系统CPU的资源，不受其他影响，除非手机关机了，或者重启了，没有打开此APP等等
  
  认真思考之后，我的构思是这样的：
- 第一、使用一个注册广播【全局性的】来监听AlarmService每次发出的请求并且根据不同的AlarmService【绑定的requestCode、Action不同】,做出像对应的处理和界面显示
+ 第一、使用一个注册广播【全局性的】来监听AlarmManager每次发出的请求并且根据不同的AlarmManager【绑定的requestCode、Action不同】,做出像对应的处理和界面显示
  第二、每添加一个计时器，开辟一个相对应的AlarmManager，当然如果关闭时，一定要找到与之对应的才行。
  
  回顾：其实可以使用Serive来做此问题，综合考虑，感觉不合适，后来废弃了，如果有其他用户使用Service来实现此功能，可以提供参考。
@@ -215,7 +215,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 }
 
 
-然后是一个实体类【启动AlarmService】
+然后是一个实体类【启动AlarmManager】
 
  package com.coder80.timer.utils;
 
