@@ -151,6 +151,28 @@ FLAG_UPDATE_CURRENT:如果系统中有一个和你描述的PendingIntent对等�
  接着就是代码实现了。
  
  
+ 但是在实际开发中小米手机不起作用，这是为什么呢？谷姐一箩筐，并没有一个很好的解决此问题的结果，都是又问无回。
+ 
+ 
+  /**
+         * 在小米的手机上（严格的说应该是小米Rom）执行周期太短的话，一旦系统休眠，AlarmManager就会失效。搜索结果来看，这个问题很普遍。
+         * 发现是周期不能短于5分钟，否则不会唤醒系统。
+         * 小米手机对Alarm做了优化，因为平凡调度Alarm的使用会增加电量的消耗.
+         */
+        /**
+         * 解决方案：
+         *添加小米制造商的判断，如果是小米手机，使用另外一种计算方法，在网上找了各种结果，没有效果，
+         * 最终采用此种方法可以解决小米手机不能监听广播的问题
+         */
+
+        if("xiaomi".equals(android.os.Build.MANUFACTURER.toLowerCase())){
+            //am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000, alarmSender);
+            am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), Constants.ELAPSED_TIME, alarmSender);
+        }else {
+            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), Constants.ELAPSED_TIME, alarmSender);
+            //am.setExact(AlarmManager.RTC_WAKEUP,  Constants.ELAPSED_TIME, alarmSender);
+        }
+ 
  首先增加一个全局的广播
  java代码：
  
@@ -225,12 +247,12 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.util.Log;
-import java.util.List;
 
 import com.coder80.timer.receiver.BootBroadcastReceiver;
-import com.coder80.timer.service.UploadPOIService;
-import com.coder80.timer.service.UploadPOIService2;
+
+import java.util.List;
 /**
  * Created by Daniel on 2015/8/18.
  */
@@ -268,8 +290,24 @@ public class ServiceUtil {
             Log.i("ServiceUtil-AlarmManager", "failed to start " + e.toString());
         }
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), Constants.ELAPSED_TIME, alarmSender);
-        //am.setExact(AlarmManager.RTC_WAKEUP,  Constants.ELAPSED_TIME, alarmSender);
+        /**
+         * 在小米的手机上（严格的说应该是小米Rom）执行周期太短的话，一旦系统休眠，AlarmManager就会失效。搜索结果来看，这个问题很普遍。
+         * 发现是周期不能短于5分钟，否则不会唤醒系统。
+         * 小米手机对Alarm做了优化，因为平凡调度Alarm的使用会增加电量的消耗.
+         */
+        /**
+         * 解决方案：
+         *添加小米制造商的判断，如果是小米手机，使用另外一种计算方法，在网上找了各种结果，没有效果，
+         * 最终采用此种方法可以解决小米手机不能监听广播的问题
+         */
+
+        if("xiaomi".equals(android.os.Build.MANUFACTURER.toLowerCase())){
+            //am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000, alarmSender);
+            am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), Constants.ELAPSED_TIME, alarmSender);
+        }else {
+            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), Constants.ELAPSED_TIME, alarmSender);
+            //am.setExact(AlarmManager.RTC_WAKEUP,  Constants.ELAPSED_TIME, alarmSender);
+        }
     }
     
     public static void invokeTimerPOIService2(Context context,int curMillis){
@@ -284,8 +322,23 @@ public class ServiceUtil {
             Log.i("ServiceUtil-AlarmManager", "failed to start " + e.toString());
         }
         AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), Constants.ELAPSED_TIME, alarmSender);
-        //am.setExact(AlarmManager.RTC_WAKEUP,  Constants.ELAPSED_TIME, alarmSender);
+        /**
+         * 在小米的手机上（严格的说应该是小米Rom）执行周期太短的话，一旦系统休眠，AlarmManager就会失效。搜索结果来看，这个问题很普遍。
+         * 小米发现是周期不能短于5分钟，否则不会唤醒系统。
+         * 小米手机对Alarm做了优化，因为平凡调度Alarm的使用会增加电量的消耗.
+         */
+        /**
+         * 解决方案：
+         *添加小米制造商的判断，如果是小米手机，使用另外一种计算方法，在网上找了各种结果，没有效果，
+         * 最终采用此种方法可以解决小米手机不能监听广播的问题
+         */
+        if("xiaomi".equals(android.os.Build.MANUFACTURER.toLowerCase())){
+            //am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000, alarmSender);
+            am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), Constants.ELAPSED_TIME, alarmSender);
+        }else {
+            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), Constants.ELAPSED_TIME, alarmSender);
+            //am.setExact(AlarmManager.RTC_WAKEUP,  Constants.ELAPSED_TIME, alarmSender);
+        }
     }
     
 
@@ -308,6 +361,7 @@ public class ServiceUtil {
     }
     
 }
+
 
 
 
@@ -477,7 +531,27 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
  
+ ==============================================================================
  
+ AlarmManager am = (AlarmManager) context.getSystemService(Activity.ALARM_SERVICE);
+        /**
+         * 在小米的手机上（严格的说应该是小米Rom）执行周期太短的话，一旦系统休眠，AlarmManager就会失效。搜索结果来看，这个问题很普遍。
+         * 发现是周期不能短于5分钟，否则不会唤醒系统。
+         * 小米手机对Alarm做了优化，因为平凡调度Alarm的使用会增加电量的消耗.
+         */
+        /**
+         * 解决方案：
+         *添加小米制造商的判断，如果是小米手机，使用另外一种计算方法，在网上找了各种结果，没有效果，
+         * 最终采用此种方法可以解决小米手机不能监听广播的问题
+         */
+
+        if("xiaomi".equals(android.os.Build.MANUFACTURER.toLowerCase())){
+            //am.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 1000, alarmSender);
+            am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), Constants.ELAPSED_TIME, alarmSender);
+        }else {
+            am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), Constants.ELAPSED_TIME, alarmSender);
+            //am.setExact(AlarmManager.RTC_WAKEUP,  Constants.ELAPSED_TIME, alarmSender);
+        }
  
  
  
